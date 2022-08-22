@@ -180,7 +180,7 @@ static const void *RouterURL = &RouterURL;
 + (void)setup {
     __weak YDRouter *router = [self sharedInstance];
     // 依据XLVCMap.plist添加界面调用到Router
-    NSArray *vcMap = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ARTVCMap" ofType:@"plist"]];
+    NSArray *vcMap = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"YDVCMap" ofType:@"plist"]];
     router.vcMap = vcMap;
     
     [self customResigteres];
@@ -547,17 +547,7 @@ static const void *RouterURL = &RouterURL;
 
 
 + (void)backToServiceIndexPage:(YDRouter *)router{
-//    if (router.tbVC != nil &&
-//        router.tbVC.viewControllers.count >0) {
-//        for (UIViewController *temp in router.tbVC.viewControllers) {
-//            if (temp != nil &&
-//                [temp isKindOfClass:[HYRWebViewController class]]) {
-//                ArtWebViewController *curViewController = (ArtWebViewController*)temp;
-//                [curViewController backToServicePage];
-//                break;
-//            }
-//        }
-//    }
+    
 }
 
 

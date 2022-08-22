@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define THEARTURLHandler [YDURLHandle sharedManager]
+#define THEYDURLHandler [YDURLHandle sharedManager]
 
 
 @interface YDURLHandle : NSObject

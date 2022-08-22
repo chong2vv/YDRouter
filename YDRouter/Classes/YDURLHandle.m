@@ -10,7 +10,7 @@
 #import "YDURLHelper.h"
 #import "YDRouter.h"
 
-static NSString *artSchemaUrl = @"yd-general-ios-app";
+static NSString *ydSchemaUrl = @"yd-general-ios-app";
 
 @interface YDURLHandle ()
 
@@ -61,7 +61,7 @@ static NSString *artSchemaUrl = @"yd-general-ios-app";
     // 外部 URL Schemes
     // 支付宝支付
     // 自定义 URL 跳转页面
-    if ( [scheme isEqualToString:[[YDRouter sharedInstance].schemeUrl?:artSchemaUrl lowercaseString]]
+    if ( [scheme isEqualToString:[[YDRouter sharedInstance].schemeUrl?:ydSchemaUrl lowercaseString]]
         && [self handleCustomerURLStr:urlStr userInfo:userInfo finish:finishHandler]){
         return YES;
     }
