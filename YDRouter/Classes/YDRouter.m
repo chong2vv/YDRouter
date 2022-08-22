@@ -242,7 +242,7 @@ static const void *RouterURL = &RouterURL;
 }
 
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler {
-    NSString *url = [[self.schemeUrl?:@"artvideowb".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
+    NSString *url = [[self.schemeUrl?:@"ydapp".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
     //NSLog(@"注册%@",url);
     [MGJRouter registerURLPattern:url toHandler:^(NSDictionary *routerParameters) {
         NSDictionary *d = routerParameters[@"MGJRouterParameterUserInfo"];
