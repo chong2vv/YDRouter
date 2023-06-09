@@ -46,6 +46,14 @@
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
+
++ (void)handleURLStr:(NSString *)urlStr;
++ (void)handleURLStr:(NSString *)urlStr finish:(void (^)(id result))finishHandler;
++ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo;
++ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
+
+
+
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler;
 
 @property (nonatomic, copy, readonly) NSString *schemeUrl;

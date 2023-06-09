@@ -208,8 +208,8 @@ static const void *RouterURL = &RouterURL;
                 }
                 
                 [router parseAndSetParams:vc params:paramsDict dict:userInfo];
-                [router pushVC:vc userInfo:userInfo];
-                
+                void(^callback)(id result) = userInfo[@"^"];
+                callback(vc);
             }];
         }
     }
@@ -241,8 +241,41 @@ static const void *RouterURL = &RouterURL;
     [MGJRouter openURL:url withUserInfo:dict completion:finishHandler];
 }
 
++ (void)handleURLStr:(NSString *)urlStr {
+    [YDRouter handleURLStr:urlStr userInfo:nil finish:NULL];
+}
+
++ (void)handleURLStr:(NSString *)urlStr finish:(void (^)(id))finishHandler {
+    [YDRouter handleURLStr:urlStr userInfo:nil finish:finishHandler];
+}
+
++ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo {
+    [YDRouter handleURLStr:urlStr userInfo:userInfo finish:NULL];
+}
+
++ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id))finishHandler {
+    YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
+    
+    NSString *scheme = [hyrUrl.scheme lowercaseString];
+    
+    // 外部 URL Schemes
+    // 支付宝支付
+    // 自定义 URL 跳转页面
+    if ([scheme isEqualToString:[[YDRouter sharedInstance].schemeUrl lowercaseString]]){
+        [YDRouter handleCustomerURLStr:urlStr userInfo:userInfo finish:finishHandler];
+    }
+}
+
+// native
++ (void) handleCustomerURLStr:(NSString*) urlStr  userInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler{
+    // native
+    YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
+    [YDRouter openURL:hyrUrl withUserInfo:userInfo finish:finishHandler];
+}
+
+
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler {
-    NSString *url = [[self.schemeUrl?:@"ydapp".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
+    NSString *url = [[self.schemeUrl?:@"YDProject".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
     //NSLog(@"注册%@",url);
     [MGJRouter registerURLPattern:url toHandler:^(NSDictionary *routerParameters) {
         NSDictionary *d = routerParameters[@"MGJRouterParameterUserInfo"];
@@ -259,21 +292,6 @@ static const void *RouterURL = &RouterURL;
  */
 + (void)customResigteres{
     __weak YDRouter *router = [self sharedInstance];
-    [router registerURLPattern:@"login" toHandler:^(NSDictionary *userInfo) {
-        
-    }];
-    
-    // 去开户
-    [router registerURLPattern:@"openaccount" toHandler:^(NSDictionary *userInfo) {
-        
-    }];
-    
-    // 首页
-    [router registerURLPattern:@"home" toHandler:^(NSDictionary *userInfo) {
-        // 是否刷新
-        
-    }];
-    
     // 因为需要传参数，所以要映射一下 url
     [router registerURLPattern:@"smartinvestdetail" toHandler:^(NSDictionary *userInfo) {
         
@@ -315,7 +333,6 @@ static const void *RouterURL = &RouterURL;
     [router registerURLPattern:@"setting" toHandler:^(NSDictionary *userInfo) {
         
     }];
-    
     [self customResigtWithRouter:router];
 }
 
