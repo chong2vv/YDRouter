@@ -31,32 +31,51 @@
  *                              <string>~18</string>)
  */
 
+@property (nonatomic, copy, readonly) NSString *schemeUrl;
 
 + (void)setup;
+
 + (instancetype)sharedInstance;
 
+/**
+ 配置scheme， 默认YDProject
+ */
 - (void)configSetScheme:(NSString *)scheme;
+
 // 自定义添加的跳转注册（非plist文件管理）
 /**
  *  pattern不能包含大写字母
  */
 + (void)customResigtWithRouter:(YDRouter *)router;
 
+/**
+ 修改不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+ */
 + (void)openURL:(YDURLHelper *)URL;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
+/**
+ 修改不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+ */
++ (void)openURLStr:(NSString *)urlStr;
++ (void)openURLStr:(NSString *)urlStr finish:(void (^)(id result))finishHandler;
++ (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo;
++ (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
-+ (void)handleURLStr:(NSString *)urlStr;
-+ (void)handleURLStr:(NSString *)urlStr finish:(void (^)(id result))finishHandler;
-+ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo;
-+ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
-
-
+/**
+ 注册路由回调，例如：
+ [YDRouter.sharedInstance registerURLPattern:@"YDCheckLogin" toHandler:^(NSDictionary *userInfo) {
+     NSDictionary *aParams = userInfo;
+     YDLoginViewController *svc = [YDLoginViewController new];
+     svc.modalPresentationStyle = UIModalPresentationFullScreen;
+     svc.successCallback = [aParams objectForKey:kSuccessCallback];
+     void(^callback)(id result) = userInfo[@"^"];
+     callback(svc);
+ }];
+ */
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler;
-
-@property (nonatomic, copy, readonly) NSString *schemeUrl;
 
 @end
 

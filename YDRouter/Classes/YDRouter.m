@@ -241,19 +241,19 @@ static const void *RouterURL = &RouterURL;
     [MGJRouter openURL:url withUserInfo:dict completion:finishHandler];
 }
 
-+ (void)handleURLStr:(NSString *)urlStr {
-    [YDRouter handleURLStr:urlStr userInfo:nil finish:NULL];
++ (void)openURLStr:(NSString *)urlStr {
+    [YDRouter openURLStr:urlStr userInfo:nil finish:NULL];
 }
 
-+ (void)handleURLStr:(NSString *)urlStr finish:(void (^)(id))finishHandler {
-    [YDRouter handleURLStr:urlStr userInfo:nil finish:finishHandler];
++ (void)openURLStr:(NSString *)urlStr finish:(void (^)(id))finishHandler {
+    [YDRouter openURLStr:urlStr userInfo:nil finish:finishHandler];
 }
 
-+ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo {
-    [YDRouter handleURLStr:urlStr userInfo:userInfo finish:NULL];
++ (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo {
+    [YDRouter openURLStr:urlStr userInfo:userInfo finish:NULL];
 }
 
-+ (void)handleURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id))finishHandler {
++ (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id))finishHandler {
     YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
     
     NSString *scheme = [hyrUrl.scheme lowercaseString];
