@@ -19,6 +19,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'YDRouter/Classes/**/*'
-  s.public_header_files = 'YDRouter/Classes/YDRouter.h'
 
 end
