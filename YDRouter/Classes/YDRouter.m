@@ -190,13 +190,14 @@ static const void *RouterURL = &RouterURL;
 + (void)autoRegister:(YDURLHelper *)URL {
     __weak YDRouter *router = [self sharedInstance];
     for (id map in router.vcMap) {
+        NSString *scheme = [self jsonString:@"scheme" with:map];
         NSString *host = [self jsonString:@"host" with:map];
-        if ([[host lowercaseString] isEqualToString:[URL.host lowercaseString]]) {
+        if ([[scheme lowercaseString] isEqualToString:[URL.scheme lowercaseString]] && [[host lowercaseString] isEqualToString:[URL.host lowercaseString]]) {
             NSString *hClass = [self jsonString:@"class" with:map];
             NSDictionary *paramsDict = [self jsonDict:@"params" with:map];
             NSString *sbname = [self jsonString:@"sbname" with:map];
             //NSLog(@"注册url=%@",host);
-            [router registerURLPattern:host toHandler:^(NSDictionary *userInfo) {
+            [router registerURLPattern:[[scheme.lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[host lowercaseString]] toHandler:^(NSDictionary *userInfo) {
                 Class vcClass = NSClassFromString(hClass);
                 id vc = nil;
                 if (!sbname || [[sbname stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
@@ -256,14 +257,10 @@ static const void *RouterURL = &RouterURL;
 + (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id))finishHandler {
     YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
     
-    NSString *scheme = [hyrUrl.scheme lowercaseString];
-    
     // 外部 URL Schemes
     // 支付宝支付
     // 自定义 URL 跳转页面
-    if ([scheme isEqualToString:[[YDRouter sharedInstance].schemeUrl lowercaseString]]){
-        [YDRouter handleCustomerURLStr:urlStr userInfo:userInfo finish:finishHandler];
-    }
+    [YDRouter handleCustomerURLStr:urlStr userInfo:userInfo finish:finishHandler];
 }
 
 // native
@@ -273,16 +270,29 @@ static const void *RouterURL = &RouterURL;
     [YDRouter openURL:hyrUrl withUserInfo:userInfo finish:finishHandler];
 }
 
++ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSArray *)parameters {
+    return [MGJRouter generateURLWithPattern:pattern parameters:parameters];
+}
+
 
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler {
-    NSString *url = [[self.schemeUrl?:@"YDProject".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
-    //NSLog(@"注册%@",url);
-    [MGJRouter registerURLPattern:url toHandler:^(NSDictionary *routerParameters) {
-        NSDictionary *d = routerParameters[@"MGJRouterParameterUserInfo"];
-        if (d && [d isKindOfClass:[NSDictionary class]]) {
-            handler(d);
-        }
-    }];
+    if ([URLPattern rangeOfString:@"://"].location != NSNotFound) {
+        [MGJRouter registerURLPattern:URLPattern toHandler:^(NSDictionary *routerParameters) {
+            NSDictionary *d = routerParameters[@"MGJRouterParameterUserInfo"];
+            if (d && [d isKindOfClass:[NSDictionary class]]) {
+                handler(d);
+            }
+        }];
+    }else {
+        NSString *url = [[self.schemeUrl?:@"project".lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[URLPattern lowercaseString]];
+        //NSLog(@"注册%@",url);
+        [MGJRouter registerURLPattern:url toHandler:^(NSDictionary *routerParameters) {
+            NSDictionary *d = routerParameters[@"MGJRouterParameterUserInfo"];
+            if (d && [d isKindOfClass:[NSDictionary class]]) {
+                handler(d);
+            }
+        }];
+    }
 }
 
 

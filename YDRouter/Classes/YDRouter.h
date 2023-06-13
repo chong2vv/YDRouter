@@ -38,7 +38,7 @@
 + (instancetype)sharedInstance;
 
 /**
- 配置scheme， 默认YDProject
+ 配置scheme， 默认project
  */
 - (void)configSetScheme:(NSString *)scheme;
 
@@ -49,14 +49,28 @@
 + (void)customResigtWithRouter:(YDRouter *)router;
 
 /**
- 修改不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+ *  调用此方法来拼接 urlpattern 和 parameters
+ *
+ *  #define MGJ_ROUTE_BEAUTY @"beauty/:id"
+ *  [MGJRouter generateURLWithPattern:MGJ_ROUTE_BEAUTY, @[@13]];
+ *
+ *
+ *  @param pattern    url pattern 比如 @"beauty/:id"
+ *  @param parameters 一个数组，数量要跟 pattern 里的变量一致
+ *
+ *  @return 生成链接
+ */
++ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSArray *)parameters;
+
+/**
+ 不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
  */
 + (void)openURL:(YDURLHelper *)URL;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
 /**
- 修改不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+  不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
  */
 + (void)openURLStr:(NSString *)urlStr;
 + (void)openURLStr:(NSString *)urlStr finish:(void (^)(id result))finishHandler;

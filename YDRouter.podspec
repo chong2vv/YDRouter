@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'YDRouter'
-  s.version          = '0.1.3'
+  s.version          = '0.1.5'
   s.summary          = '二次封装MGJRouter的路由库'
 
   s.homepage         = 'https://github.com/chong2vv/YDRouter'

@@ -7,12 +7,13 @@
 //
 
 #import "YDAppDelegate.h"
-
+#import <YDRouter/YDRouter.h>
 @implementation YDAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    [YDRouter setup];
     return YES;
 }
 

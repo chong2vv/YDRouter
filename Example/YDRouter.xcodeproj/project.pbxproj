@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		156F91692A385EC20031DB8C /* YDVCMap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 156F91682A385EC20031DB8C /* YDVCMap.plist */; };
+		156F916C2A385EFB0031DB8C /* YDNextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 156F916B2A385EFB0031DB8C /* YDNextViewController.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -37,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		156F91682A385EC20031DB8C /* YDVCMap.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = YDVCMap.plist; sourceTree = "<group>"; };
+		156F916A2A385EFB0031DB8C /* YDNextViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YDNextViewController.h; sourceTree = "<group>"; };
+		156F916B2A385EFB0031DB8C /* YDNextViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YDNextViewController.m; sourceTree = "<group>"; };
 		15C5BD9928AE271600E5B1EC /* YDURLHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YDURLHelper.h; sourceTree = "<group>"; };
 		15C5BD9A28AE271600E5B1EC /* YDURLHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YDURLHelper.m; sourceTree = "<group>"; };
 		15C5BD9B28AE296900E5B1EC /* MGJRouter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MGJRouter.h; sourceTree = "<group>"; };
@@ -170,9 +175,12 @@
 			children = (
 				6003F59C195388D20070C39A /* YDAppDelegate.h */,
 				6003F59D195388D20070C39A /* YDAppDelegate.m */,
+				156F91682A385EC20031DB8C /* YDVCMap.plist */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F5A5195388D20070C39A /* YDViewController.h */,
 				6003F5A6195388D20070C39A /* YDViewController.m */,
+				156F916A2A385EFB0031DB8C /* YDNextViewController.h */,
+				156F916B2A385EFB0031DB8C /* YDNextViewController.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -318,6 +326,7 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				156F91692A385EC20031DB8C /* YDVCMap.plist in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -420,6 +429,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				156F916C2A385EFB0031DB8C /* YDNextViewController.m in Sources */,
 				6003F59E195388D20070C39A /* YDAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* YDViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,

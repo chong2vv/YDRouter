@@ -7,6 +7,8 @@
 //
 
 #import "YDViewController.h"
+#import <YDRouter/YDRouter.h>
+#import "YDNextViewController.h"
 
 @interface YDViewController ()
 
@@ -18,6 +20,19 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+//    [[YDRouter sharedInstance] registerURLPattern:@"nextViewController" toHandler:^(NSDictionary *userInfo) {
+//        YDNextViewController * svc = [[YDNextViewController alloc] init];
+//        void(^callback)(id result) = userInfo[@"^"];
+//        callback(svc);
+//    }];
+    
+}
+- (IBAction)routerOpen:(id)sender {
+    [YDRouter openURLStr:@"ydrouter://nextViewController" finish:^(id result) {
+        UIViewController *vc = result;
+        [self.navigationController pushViewController:vc animated:YES];
+    }];
 }
 
 - (void)didReceiveMemoryWarning
