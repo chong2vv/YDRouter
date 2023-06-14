@@ -19,6 +19,7 @@ _Pragma("clang diagnostic pop") \
 } while (0)
 
 static const void *RouterURL = &RouterURL;
+static const void *HandlerUserInfo = &HandlerUserInfo;
 
 @interface UIViewController (XLBaseViewController)
 
@@ -49,6 +50,7 @@ static const void *RouterURL = &RouterURL;
 
 @implementation UIViewController (YDRouter)
 @dynamic routerURL;
+@dynamic handlerUserInfo;
 
 - (void)setRouterURL:(NSString *)routerURL {
     NSArray *vcs = self.childViewControllers;
@@ -61,8 +63,23 @@ static const void *RouterURL = &RouterURL;
     objc_setAssociatedObject(self, RouterURL, routerURL, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (void)setHandlerUserInfo:(NSDictionary *)handlerUserInfo {
+    NSArray *vcs = self.childViewControllers;
+    if (vcs && vcs.count > 0) {
+        [vcs enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            __weak UIViewController *vc = obj;
+            vc.handlerUserInfo = [handlerUserInfo copy];
+        }];
+    }
+    objc_setAssociatedObject(self, HandlerUserInfo, handlerUserInfo, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
 - (NSString *)routerURL {
     return objc_getAssociatedObject(self, RouterURL);
+}
+
+- (NSDictionary *)handlerUserInfo {
+    return objc_getAssociatedObject(self, HandlerUserInfo);
 }
 
 @end
@@ -91,8 +108,6 @@ static const void *RouterURL = &RouterURL;
                 UIWindow *(*func)(id, SEL) = (void *)imp;
                 window = func(appDelegate, sel);
             }
-//            instance.navVC = (UINavigationController *)window.rootViewController;
-//            instance.tbVC = [instance.navVC.viewControllers objectAtIndex:0];
         });
     }
     return instance;
@@ -135,8 +150,9 @@ static const void *RouterURL = &RouterURL;
     return result;
 }
 
-// 页面跳转
-- (void)pushVC:(UIViewController *)vc userInfo:(NSDictionary *)userInfo {
++ (void)pushVC:(UIViewController *)vc userInfo:(NSDictionary *)userInfo {
+    
+    __weak YDRouter *router = [self sharedInstance];
     NSMutableString *finalURL = [NSMutableString new];
     
     NSString *url = userInfo[@":"];
@@ -171,8 +187,8 @@ static const void *RouterURL = &RouterURL;
     
     id navVC = nil;
     
-    UIViewController *currentVC = [[self class] currentVC];
-    navVC = currentVC ? (currentVC.navigationController ?: self.navVC) : self.navVC;
+    UIViewController *currentVC = [[router class] currentVC];
+    navVC = currentVC ? (currentVC.navigationController ?: router.navVC) : router.navVC;
     
     [navVC pushViewController:vc animated:YES];
 }
@@ -206,7 +222,7 @@ static const void *RouterURL = &RouterURL;
         }];
     }
     
-    [self customResigteres];
+    [self customResigtWithRouter:router];
 }
 
 // 自动注册
@@ -295,8 +311,39 @@ static const void *RouterURL = &RouterURL;
     [YDRouter openURL:hyrUrl withUserInfo:userInfo finish:finishHandler];
 }
 
-+ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSArray *)parameters {
-    return [MGJRouter generateURLWithPattern:pattern parameters:parameters];
++ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSDictionary *)parameters {
+    
+    NSMutableString *finalURL = [NSMutableString new];
+    
+    NSString *url = pattern;
+    if ([url isKindOfClass:[NSString class]] && url.length > 0) {
+        [finalURL appendString:url];
+        
+        NSMutableArray *params = [NSMutableArray new];
+        NSString *paramRegex = @"[a-zA-Z_][a-zA-Z0-9_]{0,}";
+        NSPredicate *paramPredicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", paramRegex];
+        
+        [parameters enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([paramPredicate evaluateWithObject:key]) {
+                if ([obj isKindOfClass:[NSString class]] && [obj length] > 0) {
+                    [params addObject:[NSString stringWithFormat:@"%@=%@", key, obj]];
+                } else if ([obj isKindOfClass:[NSNumber class]]) {
+                    NSNumberFormatter *formater = [[NSNumberFormatter alloc] init];
+                    NSString *str = [formater stringFromNumber:obj];
+                    if (str && str.length > 0) {
+                        [params addObject:[NSString stringWithFormat:@"%@=%@", key, str]];
+                    }
+                }
+            }
+        }];
+        
+        if (params.count > 0) {
+            [finalURL appendString:@"?"];
+            [finalURL appendString:[params componentsJoinedByString:@"&"]];
+        }
+    }
+    
+    return finalURL;
 }
 
 
@@ -318,57 +365,6 @@ static const void *RouterURL = &RouterURL;
             }
         }];
     }
-}
-
-
-// 自定义添加的跳转注册（非plist文件管理）
-/**
- *  pattern不能包含大写字母
- */
-+ (void)customResigteres{
-    __weak YDRouter *router = [self sharedInstance];
-    // 因为需要传参数，所以要映射一下 url
-    [router registerURLPattern:@"smartinvestdetail" toHandler:^(NSDictionary *userInfo) {
-        
-    }];
-    
-    // tab页
-    [router registerURLPattern:@"tab" toHandler:^(NSDictionary *userInfo) {
-        NSInteger index = [[userInfo objectForKey:@"index"] integerValue];
-
-        router.tbVC.selectedIndex = index;
-        [router.navVC popToRootViewControllerAnimated:YES];
-        NSString *isrefresh = userInfo[@"isrefresh"];
-        if (isrefresh) {
-            
-        }
-        switch (index) {
-            case 0:{
-                
-            }
-            case 1:{
-                [[self class] backToServiceIndexPage:router];
-                
-            }
-                break;
-            case 2:
-            case 3:
-            case 4:{
-                break;
-                
-            }
-                
-            default:
-                break;
-        }
-    }];
-    
-    
-    //setting
-    [router registerURLPattern:@"setting" toHandler:^(NSDictionary *userInfo) {
-        
-    }];
-    [self customResigtWithRouter:router];
 }
 
 // 通过plist文件配置信息，对属性及关联对象赋值
@@ -399,12 +395,6 @@ static const void *RouterURL = &RouterURL;
             NSString *key = propertyName;
             
             id value = keyMapDictionary[key];
-            
-            if ([key hasPrefix:@"~"]) {
-                if ([key isEqualToString:@"~"]) {
-                    value = valueMapDictionary;
-                }
-            }
             
             //如果value为空，则进入下一个循环
             if (!value) {
@@ -477,6 +467,17 @@ static const void *RouterURL = &RouterURL;
         free(properties);
         superClass = class_getSuperclass(baseClass);
     } while (superClass != baseClass && superClass != [NSObject class]);
+    
+    // 关联对象赋值
+    [unmatchedKeyMapDictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull classKey, BOOL * _Nonnull stop) {
+        id value = valueMapDictionary[key];
+        [self setObj:obj associated:key value:value];
+    }];
+    
+    if (valueMapDictionary) {
+        [self setObj:obj associated:@"handlerUserInfo" value:valueMapDictionary];
+    }
+
 }
 
 - (NSString *)getClassNameFromAttributeString:(NSString *)attributeString

@@ -4,10 +4,7 @@
 <array>
 	<dict>
 		<key>params</key>
-		<dict>
-			<key>name</key>
-			<string>这是测试传值</string>
-		</dict>
+		<dict/>
 		<key>scheme</key>
 		<string>ydrouter</string>
 		<key>class</key>

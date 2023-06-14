@@ -7,6 +7,7 @@
 //
 
 #import "YDNextViewController.h"
+#import <YDRouter/YDRouter.h>
 
 @interface YDNextViewController ()
 
@@ -24,7 +25,8 @@
     titleLabel.frame = CGRectMake(0, 0, 300, 60);
     titleLabel.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
     
-    NSLog(@"%@", self.name);
+    NSLog(@"%@", self.handlerUserInfo);
+    NSLog(@"url: ====== %@", self.routerURL);
 }
 
 

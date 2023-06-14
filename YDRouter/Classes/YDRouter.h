@@ -25,10 +25,6 @@
  *                             关联对象dict透传userInfo, 则为
  *                             <key>dict</key>
  *                             <string>~</string>)
- *            (直接赋值:~<data>, <data>为需要赋的值, 例如:
- *                              属性age赋值18, 则为
- *                              <key>age</key>
- *                              <string>18</string>)
  */
 
 @property (nonatomic, copy, readonly) NSString *schemeUrl;
@@ -60,17 +56,17 @@
  *
  *  @return 生成链接
  */
-+ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSArray *)parameters;
++ (NSString *)generateURLWithPattern:(NSString *)pattern parameters:(NSDictionary *)parameters;
 
 /**
- 不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+ 不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以通过这种方式传值
  */
 + (void)openURL:(YDURLHelper *)URL;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo;
 + (void)openURL:(YDURLHelper *)URL withUserInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
 /**
-  不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以用
+  不会直接跳转，而是回调注册时返回的构成数据，VC啦、UID啦等等，这样pod库或者扩展也都可以通过这种方式传值
  */
 + (void)openURLStr:(NSString *)urlStr;
 + (void)openURLStr:(NSString *)urlStr finish:(void (^)(id result))finishHandler;
@@ -91,11 +87,14 @@
  */
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler;
 
++ (void)pushVC:(UIViewController *)vc userInfo:(NSDictionary *)userInfo;
+
 @end
 
 @interface UIViewController (YDRouter)
 
 @property (nonatomic, copy) NSString *routerURL;
+@property (nonatomic, copy) NSDictionary *handlerUserInfo;
 
 
 @end

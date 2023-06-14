@@ -29,10 +29,32 @@
     
 }
 - (IBAction)routerOpen:(id)sender {
-    [YDRouter openURLStr:@"ydrouter://nextViewController" finish:^(id result) {
+//    [YDRouter openURLStr:@"ydrouter://nextViewController" finish:^(id result) {
+//        UIViewController *vc = result;
+//        [self.navigationController pushViewController:vc animated:YES];
+//    }];
+    
+    NSString *url = [YDRouter generateURLWithPattern:@"gg://nextViewController" parameters:@{@"name":@"heiheihei", @"age":@"18",@"class":@"YDNextViewController"}];
+    NSLog(url);
+//    [YDRouter openURLStr:url finish:^(id result) {
+//        UIViewController *vc = result;
+//        [YDRouter pushVC:vc userInfo: vc.handlerUserInfo];
+//    }];
+    
+    [YDRouter openURLStr:url userInfo:@{@"heihei":@"haha"} finish:^(id result) {
         UIViewController *vc = result;
-        [self.navigationController pushViewController:vc animated:YES];
+        [YDRouter pushVC:vc userInfo: vc.handlerUserInfo];
     }];
+//    [YDRouter openURLStr:@"ydrouter://nextViewController" userInfo:@{@"name":@"heiheihei", @"age":@"18"} finish:^(id result) {
+//        UIViewController *vc = result;
+//        [YDRouter pushVC:vc userInfo: vc.handlerUserInfo];
+////        [self.navigationController pushViewController:vc animated:YES];
+//    }];
+    
+//    [YDRouter openURLStr:@"pdd://nextViewController?class=YDNextViewController" userInfo:@{@"name":@"heiheihei", @"age":@"18"} finish:^(id result) {
+//        UIViewController *vc = result;
+//        [self.navigationController pushViewController:vc animated:YES];
+//    }];
     
 //    [YDRouter openURLStr:@"pdd://nextViewController?class=YDNextViewController&name=test" finish:^(id result) {
 //        UIViewController *vc = result;
