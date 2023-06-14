@@ -16,17 +16,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor whiteColor];
+    UILabel *titleLabel = [[UILabel alloc] init];
+    [self.view addSubview:titleLabel];
+    titleLabel.text = NSStringFromClass([self class]);
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.frame = CGRectMake(0, 0, 300, 60);
+    titleLabel.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, [UIScreen mainScreen].bounds.size.height/2);
+    
+    NSLog(@"%@", self.name);
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

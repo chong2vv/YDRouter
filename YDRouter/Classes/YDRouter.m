@@ -182,6 +182,29 @@ static const void *RouterURL = &RouterURL;
     // 依据XLVCMap.plist添加界面调用到Router
     NSArray *vcMap = [NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"YDVCMap" ofType:@"plist"]];
     router.vcMap = vcMap;
+    for (id map in router.vcMap) {
+        NSString *scheme = [self jsonString:@"scheme" with:map];
+        NSString *host = [self jsonString:@"host" with:map];
+        NSString *hClass = [self jsonString:@"class" with:map];
+        NSDictionary *paramsDict = [self jsonDict:@"params" with:map];
+        NSString *sbname = [self jsonString:@"sbname" with:map];
+        //NSLog(@"注册url=%@",host);
+        [router registerURLPattern:[[scheme.lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[host lowercaseString]] toHandler:^(NSDictionary *userInfo) {
+            Class vcClass = NSClassFromString(hClass);
+            id vc = nil;
+            if (!sbname || [[sbname stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+                vc = [vcClass new];
+            }
+            else{
+                UIStoryboard * s_storyboard = [UIStoryboard storyboardWithName:sbname bundle:nil];
+                vc = [s_storyboard instantiateViewControllerWithIdentifier:hClass];
+            }
+            
+            [router parseAndSetParams:vc params:paramsDict dict:userInfo];
+            void(^callback)(id result) = userInfo[@"^"];
+            callback(vc);
+        }];
+    }
     
     [self customResigteres];
 }
@@ -189,31 +212,33 @@ static const void *RouterURL = &RouterURL;
 // 自动注册
 + (void)autoRegister:(YDURLHelper *)URL {
     __weak YDRouter *router = [self sharedInstance];
-    for (id map in router.vcMap) {
-        NSString *scheme = [self jsonString:@"scheme" with:map];
-        NSString *host = [self jsonString:@"host" with:map];
-        if ([[scheme lowercaseString] isEqualToString:[URL.scheme lowercaseString]] && [[host lowercaseString] isEqualToString:[URL.host lowercaseString]]) {
-            NSString *hClass = [self jsonString:@"class" with:map];
-            NSDictionary *paramsDict = [self jsonDict:@"params" with:map];
-            NSString *sbname = [self jsonString:@"sbname" with:map];
-            //NSLog(@"注册url=%@",host);
-            [router registerURLPattern:[[scheme.lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[host lowercaseString]] toHandler:^(NSDictionary *userInfo) {
-                Class vcClass = NSClassFromString(hClass);
-                id vc = nil;
-                if (!sbname || [[sbname stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
-                    vc = [vcClass new];
-                }
-                else{
-                    UIStoryboard * s_storyboard = [UIStoryboard storyboardWithName:sbname bundle:nil];
-                    vc = [s_storyboard instantiateViewControllerWithIdentifier:hClass];
-                }
-                
-                [router parseAndSetParams:vc params:paramsDict dict:userInfo];
-                void(^callback)(id result) = userInfo[@"^"];
-                callback(vc);
-            }];
-        }
+    NSString *scheme = URL.scheme;
+    NSString *host = URL.host;
+    NSDictionary *paramsDict = URL.params;
+    NSString *hClass;
+    NSString *sbname;
+    if (paramsDict[@"class"]) {
+        hClass = [paramsDict objectForKey:@"class"];
     }
+    if (paramsDict[@"sbname"]) {
+        sbname = paramsDict[@"sbname"];
+    }
+    //NSLog(@"注册url=%@",host);
+    [router registerURLPattern:[[scheme.lowercaseString stringByAppendingString:@"://"] stringByAppendingString:[host lowercaseString]] toHandler:^(NSDictionary *userInfo) {
+        Class vcClass = NSClassFromString(hClass);
+        id vc = nil;
+        if (!sbname || [[sbname stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
+            vc = [vcClass new];
+        }
+        else{
+            UIStoryboard * s_storyboard = [UIStoryboard storyboardWithName:sbname bundle:nil];
+            vc = [s_storyboard instantiateViewControllerWithIdentifier:hClass];
+        }
+        
+        [router parseAndSetParams:vc params:paramsDict dict:userInfo];
+        void(^callback)(id result) = userInfo[@"^"];
+        callback(vc);
+    }];
 }
 
 + (void)openURL:(YDURLHelper *)URL {
@@ -255,7 +280,7 @@ static const void *RouterURL = &RouterURL;
 }
 
 + (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id))finishHandler {
-    YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
+//    YDURLHelper *hyrUrl = [YDURLHelper URLWithString:urlStr];
     
     // 外部 URL Schemes
     // 支付宝支付
@@ -350,7 +375,6 @@ static const void *RouterURL = &RouterURL;
 - (void)parseAndSetParams:(id)obj params:(NSDictionary *)paramsDict dict:(NSDictionary *)userInfo {
     NSDictionary *keyMapDictionary = [paramsDict copy];
     NSDictionary *valueMapDictionary = [userInfo copy];
-    
     NSMutableDictionary *unmatchedKeyMapDictionary = [NSMutableDictionary dictionaryWithDictionary:keyMapDictionary];
     
     // 属性赋值
@@ -368,22 +392,17 @@ static const void *RouterURL = &RouterURL;
             
             //key映射
             if (![keyMapDictionary.allKeys containsObject:propertyName]) {
+                [unmatchedKeyMapDictionary removeObjectForKey:propertyName];
                 continue;
             }
             
-            [unmatchedKeyMapDictionary removeObjectForKey:propertyName];
+            NSString *key = propertyName;
             
-            NSString *key = keyMapDictionary[propertyName];
-            
-            id value = valueMapDictionary[key];
+            id value = keyMapDictionary[key];
             
             if ([key hasPrefix:@"~"]) {
                 if ([key isEqualToString:@"~"]) {
                     value = valueMapDictionary;
-                } else {
-                    if (key.length > 1) {
-                        value = [key substringFromIndex:1];
-                    }
                 }
             }
             
@@ -458,22 +477,6 @@ static const void *RouterURL = &RouterURL;
         free(properties);
         superClass = class_getSuperclass(baseClass);
     } while (superClass != baseClass && superClass != [NSObject class]);
-    
-    // 关联对象赋值
-    [unmatchedKeyMapDictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull classKey, BOOL * _Nonnull stop) {
-        id value = valueMapDictionary[classKey];
-        
-        if ([classKey hasPrefix:@"~"]) {
-            if ([classKey isEqualToString:@"~"]) {
-                value = valueMapDictionary;
-            } else {
-                if ([classKey length] > 1) {
-                    value = [key substringFromIndex:1];
-                }
-            }
-        }
-        [self setObj:obj associated:key value:value];
-    }];
 }
 
 - (NSString *)getClassNameFromAttributeString:(NSString *)attributeString

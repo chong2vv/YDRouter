@@ -33,6 +33,11 @@
         UIViewController *vc = result;
         [self.navigationController pushViewController:vc animated:YES];
     }];
+    
+//    [YDRouter openURLStr:@"pdd://nextViewController?class=YDNextViewController&name=test" finish:^(id result) {
+//        UIViewController *vc = result;
+//        [self.navigationController pushViewController:vc animated:YES];
+//    }];
 }
 
 - (void)didReceiveMemoryWarning

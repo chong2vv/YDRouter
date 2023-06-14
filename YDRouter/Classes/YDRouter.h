@@ -28,7 +28,7 @@
  *            (直接赋值:~<data>, <data>为需要赋的值, 例如:
  *                              属性age赋值18, 则为
  *                              <key>age</key>
- *                              <string>~18</string>)
+ *                              <string>18</string>)
  */
 
 @property (nonatomic, copy, readonly) NSString *schemeUrl;

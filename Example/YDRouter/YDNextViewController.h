@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface YDNextViewController : UIViewController
 
+@property (nonatomic, copy)NSString *name;
+
 @end
+
 
 NS_ASSUME_NONNULL_END
