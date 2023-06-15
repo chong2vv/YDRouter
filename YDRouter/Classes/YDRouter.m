@@ -369,9 +369,9 @@ static const void *HandlerUserInfo = &HandlerUserInfo;
 
 // 通过plist文件配置信息，对属性及关联对象赋值
 - (void)parseAndSetParams:(id)obj params:(NSDictionary *)paramsDict dict:(NSDictionary *)userInfo {
-    NSDictionary *keyMapDictionary = [paramsDict copy];
+//    NSDictionary *keyMapDictionary = [paramsDict copy];
     NSDictionary *valueMapDictionary = [userInfo copy];
-    NSMutableDictionary *unmatchedKeyMapDictionary = [NSMutableDictionary dictionaryWithDictionary:keyMapDictionary];
+    NSMutableDictionary *unmatchedKeyMapDictionary = [NSMutableDictionary dictionaryWithDictionary:valueMapDictionary];
     
     // 属性赋值
     Class baseClass = [obj class];
@@ -387,14 +387,14 @@ static const void *HandlerUserInfo = &HandlerUserInfo;
             NSString *propertyName = [NSString stringWithUTF8String:property_getName(property)];
             
             //key映射
-            if (![keyMapDictionary.allKeys containsObject:propertyName]) {
-                [unmatchedKeyMapDictionary removeObjectForKey:propertyName];
+            if (![valueMapDictionary.allKeys containsObject:propertyName]) {
                 continue;
             }
+            [unmatchedKeyMapDictionary removeObjectForKey:propertyName];
             
             NSString *key = propertyName;
             
-            id value = keyMapDictionary[key];
+            id value = valueMapDictionary[key];
             
             //如果value为空，则进入下一个循环
             if (!value) {

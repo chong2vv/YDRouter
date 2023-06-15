@@ -3,6 +3,8 @@
 <plist version="1.0">
 <array>
 	<dict>
+		<key>desc</key>
+		<string>测试数据</string>
 		<key>params</key>
 		<dict/>
 		<key>scheme</key>

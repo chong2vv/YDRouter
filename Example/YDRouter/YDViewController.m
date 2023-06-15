@@ -41,7 +41,7 @@
 //        [YDRouter pushVC:vc userInfo: vc.handlerUserInfo];
 //    }];
     
-    [YDRouter openURLStr:url userInfo:@{@"heihei":@"haha"} finish:^(id result) {
+    [YDRouter openURLStr:url userInfo:@{@"associatedObject":@"associatedObject"} finish:^(id result) {
         UIViewController *vc = result;
         [YDRouter pushVC:vc userInfo: vc.handlerUserInfo];
     }];

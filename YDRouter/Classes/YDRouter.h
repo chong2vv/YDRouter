@@ -20,11 +20,11 @@
  * params     参数映射表
  *            {key:value}, key为class的属性名/关联对象名, value为String类型的URL
  *                         参数名并支持透传和直接赋值
- *            (透传userInfo:~, userInfo为AMURL的params+AMURLHandler的userInfo+
- *                             block回调finishHandler, 例如:
- *                             关联对象dict透传userInfo, 则为
- *                             <key>dict</key>
- *                             <string>~</string>)
+ *            (透传userInfo: userInfo为AMURL的params+userInfo+
+ *                             block回调finishHandler。
+ *                          透传的字段是handlerUserInfo
+ *                          如果是VC则会默认在分类自带handlerUserInfo属性，其他类则需要自行属性。
+ *
  */
 
 @property (nonatomic, copy, readonly) NSString *schemeUrl;
@@ -32,11 +32,6 @@
 + (void)setup;
 
 + (instancetype)sharedInstance;
-
-/**
- 配置scheme， 默认project
- */
-- (void)configSetScheme:(NSString *)scheme;
 
 // 自定义添加的跳转注册（非plist文件管理）
 /**
@@ -73,6 +68,13 @@
 + (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo;
 + (void)openURLStr:(NSString *)urlStr userInfo:(NSDictionary *)userInfo finish:(void (^)(id result))finishHandler;
 
++ (void)pushVC:(UIViewController *)vc userInfo:(NSDictionary *)userInfo;
+
+
+/**
+ 配置scheme， 默认project
+ */
+- (void)configSetScheme:(NSString *)scheme;
 
 /**
  注册路由回调，例如：
@@ -86,8 +88,6 @@
  }];
  */
 - (void)registerURLPattern:(NSString *)URLPattern toHandler:(void (^)(NSDictionary *userInfo))handler;
-
-+ (void)pushVC:(UIViewController *)vc userInfo:(NSDictionary *)userInfo;
 
 @end
 
